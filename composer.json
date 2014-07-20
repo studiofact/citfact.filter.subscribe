@@ -1,0 +1,21 @@
+{
+    "name": "citfact/filter.subscribe",
+    "type": "bitrix-module",
+    "description": "Subscribe catalog.smart.filter 1C-Bitrix",
+    "keywords": ["Subscribe", "catalog.smart.filter", "1C-Bitrix"],
+    "homepage": "https://github.com/studiofact/citfact.filter.subscribe",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kulichkin Denis",
+            "email": "onexhovia@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "composer/installers": "~1.0"
+    },
+    "extra": {
+        "installer-name": "citfact.filter.subscribe"
+    }
+}
