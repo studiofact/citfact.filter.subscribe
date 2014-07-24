@@ -11,10 +11,13 @@
 
 use Bitrix\Main\Loader;
 
+Loader::includeModule('catalog');
 Loader::registerAutoLoadClasses('citfact.filter.subscribe', array(
-    'Citfact\FilterSubscribe\Model\FilterSubscribe' => 'lib/Model/FilterSubscribe.php',
-    'Citfact\FilterSubscribe\Model\FilterSubscribeNotify' => 'lib/Model/FilterSubscribeNotify.php',
-    'Citfact\FilterSubscribe\Model\FilterSubscribeStack' => 'lib/Model/FilterSubscribeStack.php',
-    'Citfact\FilterSubscribe\Model\FilterSubscribeUser' => 'lib/Model/FilterSubscribeUser.php',
+    'Citfact\FilterSubscribe\Model\SubscribeTable' => 'lib/Model/SubscribeTable.php',
+    'Citfact\FilterSubscribe\Model\SubscribeNotifyTable' => 'lib/Model/SubscribeNotifyTable.php',
+    'Citfact\FilterSubscribe\Model\SubscribeStackTable' => 'lib/Model/SubscribeStackTable.php',
+    'Citfact\FilterSubscribe\Model\SubscribeUserTable' => 'lib/Model/SubscribeUserTable.php',
     'Citfact\FilterSubscribe\Agent' => 'lib/Agent.php',
+    'Citfact\FilterSubscribe\FilterLexer' => 'lib/FilterLexer.php',
+    'Citfact\FilterSubscribe\SubscribeManager' => 'lib/SubscribeManager.php',
 ));

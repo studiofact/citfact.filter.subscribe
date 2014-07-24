@@ -199,6 +199,8 @@ class citfact_filter_subscribe extends CModule
      */
     public function installFiles()
     {
+        //CopyDirFiles($this->MODULE_PATH . '/install/components', $this->getComponentsPath(), true, true);
+
         return true;
     }
 
@@ -209,6 +211,11 @@ class citfact_filter_subscribe extends CModule
      */
     public function unInstallFiles()
     {
+        //DeleteDirFilesEx($this->getComponentsPath(false) . '/citfact/form');
+        //if (!glob($this->getComponentsPath() . '/citfact/*')) {
+            //@rmdir($this->getComponentsPath() . '/citfact/');
+        //}
+
         return true;
     }
 }
