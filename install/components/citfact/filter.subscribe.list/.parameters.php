@@ -19,13 +19,19 @@ Loc::loadMessages(__FILE__);
 
 $arComponentParameters = array(
     'PARAMETERS' => array(
-        'PARAM' => array(
+        'USER_ID' => array(
             'PARENT' => 'BASE',
-            'NAME' => Loc::getMessage('PARAM'),
-            'TYPE' => 'LIST',
-            'ADDITIONAL_VALUES' => 'Y',
-            'VALUES' => '',
-            'REFRESH' => 'Y',
+            'NAME' => Loc::getMessage('USER_ID'),
+            'TYPE' => 'STRING',
+        ),
+        'CACHE_TIME' => array(
+            'DEFAULT' => 36000000
+        ),
+        'CACHE_GROUPS' => array(
+            'PARENT' => 'CACHE_SETTINGS',
+            'NAME' => Loc::getMessage('CACHE_GROUPS'),
+            'TYPE' => 'CHECKBOX',
+            'DEFAULT' => 'Y',
         ),
     )
 );

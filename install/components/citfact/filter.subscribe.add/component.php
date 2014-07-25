@@ -14,6 +14,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 use Bitrix\Main\Application;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Loader;
+use Bitrix\Main\Entity;
+use Citfact\FilterSubscribe\Model\SubscribeUserTable;
 
 Loc::loadMessages(__FILE__);
 Loader::includeModule('citfact.filter.subscribe');
@@ -21,30 +23,53 @@ Loader::includeModule('citfact.filter.subscribe');
 $app = Application::getInstance();
 $request = $app->getContext()->getRequest();
 
-if ($request->getQuery('SAVE_FILTER') && getenv('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest') {
-    $filterData = $GLOBALS[$arParams['FILTER_NAME']];
-    foreach ($filterData as $key => $value) {
-        if (!preg_match('#PROPERTY|CATALOG_PRICE|OFFERS#', $key)) {
-            $filterData[$key] = $value;
-        }
-    }
+if (!$GLOBALS['USER']->IsAuthorized()) {
+    return;
+}
 
-    $subscribeManager = new \Citfact\FilterSubscribe\SubscribeManager();
-    $filterId = $subscribeManager->addFilter(array(
+$isAjax = (getenv('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest');
+$subscribeManager = new \Citfact\FilterSubscribe\SubscribeManager();
+
+// Check whether there is a user filter
+if ($request->getQuery('CHECK_FILTER') && $isAjax) {
+    $filterData = $GLOBALS[$arParams['FILTER_NAME']];
+    $filterData = $subscribeManager->normalizeFilter($filterData);
+    $queryBuilder = new Entity\Query(SubscribeUserTable::getEntity());
+    $filter = $queryBuilder
+        ->registerRuntimeField('filter', array(
+            'data_type' => 'Citfact\FilterSubscribe\Model\SubscribeTable',
+            'reference' => array('=this.FILTER_ID' => 'ref.ID'),
+        ))
+        ->setSelect(array('*', 'filter'))
+        ->setFilter(array('USER_ID' => $GLOBALS['USER']->GetId(), 'filter.FILTER' => $filterData))
+        ->setLimit(1)
+        ->exec()
+        ->fetch();
+
+    $GLOBALS['APPLICATION']->RestartBuffer();
+    header('Content-Type: application/json');
+    exit(json_encode(array('data' => $filter)));
+}
+
+// Saves the current filter,
+// If such a filter not already exists
+if ($request->getQuery('SAVE_FILTER') && $isAjax) {
+    $filterData = $GLOBALS[$arParams['FILTER_NAME']];
+    $filterResult = $subscribeManager->addFilter(array(
         'FILTER' => $filterData,
         'IBLOCK_ID' => $arParams['IBLOCK_ID'],
         'SECTION_ID' => $arParams['SECTION_ID'],
     ));
 
-    $filterUserId = $subscribeManager->addFilterUser(array(
+    $filterUserResult = $subscribeManager->addFilterUser(array(
         'USER_ID' => $GLOBALS['USER']->GetId(),
-        'FILTER_ID' => $filterId,
+        'FILTER_ID' => $filterResult->getId(),
     ));
 
     $GLOBALS['APPLICATION']->RestartBuffer();
     header('Content-Type: application/json');
     exit(json_encode(array(
-        'success' => ($filterId && $filterUserId)
+        'success' => ($filterResult->isSuccess() && $filterUserResult->isSuccess())
     )));
 }
 

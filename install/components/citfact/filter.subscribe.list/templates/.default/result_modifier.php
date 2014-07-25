@@ -15,6 +15,7 @@ $arResult['ITEMS_CLEAR'] = array();
 foreach ($arResult['ITEMS'] as $key => $item) {
     $filterParams = $arResult['FILTER'][$item['FILTER_LINK']];
     foreach ($filterParams as $param => $valueList) {
+        $tempory['ID'] = $item['ID'];
         $property = null;
 
         if (preg_match('/PROPERTY/', $param)) {
@@ -44,7 +45,6 @@ foreach ($arResult['ITEMS'] as $key => $item) {
             $tempory['VALUE'] = implode(', ', $valueList);
         }
 
-        $tempory['DELETE_LINK'] = $item['DELETE_LINK'];
         $arResult['ITEMS_CLEAR'][$key][] = $tempory;
     }
 }

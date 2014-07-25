@@ -24,8 +24,23 @@ $GLOBALS['APPLICATION']->SetAdditionalCSS($templateFolder . '/style.css');
             </ul>
         </div>
         <div class="col-xs-4 align-right">
-            <a href="<?= $item['DELETE_LINK'] ?>" class="btn btn-gray big"><?= GetMessage('REMOVE_FILTER') ?></a>
+            <form action="<?= POST_FORM_ACTION_URI ?>" data-remove-filter="true" method="post">
+                <input type="hidden" name="COMPONENT_ID" value="<?= $arResult['COMPONENT_ID'] ?>">
+                <input type="hidden" name="ACTION" value="DELETE">
+                <input type="hidden" name="ID" value="<?= $item['ID'] ?>">
+                <input type="submit" class="btn btn-gray big" value="<?= GetMessage('REMOVE_FILTER') ?>">
+            </form>
         </div>
     </div>
     <? endforeach ?>
+    <div class="col-xs-12 filter-one align-center<?= (empty($arResult['ITEMS_CLEAR'])) ? '' : ' hidden' ?>">
+        <?= GetMessage('EMPTY_FILTER') ?>
+    </div>
 </div>
+
+<script type="text/javascript">
+    var FilterSubscribeUser = new FilterSubscribeUser({
+        target: '[data-remove-filter]',
+        el: '.filter-one'
+    });
+</script>

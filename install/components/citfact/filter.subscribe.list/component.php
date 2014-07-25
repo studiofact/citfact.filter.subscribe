@@ -23,19 +23,20 @@ Loader::includeModule('citfact.filter.subscribe');
 
 $app = Application::getInstance();
 $request = $app->getContext()->getRequest();
+$arResult['COMPONENT_ID'] = CAjax::GetComponentID($this->getName(), $this->getTemplateName(), array());
 
-$userId = $GLOBALS['USER']->GetId();
+$userId = $arParams['USER_ID'];
 $queryBuilder = new Entity\Query(SubscribeUserTable::getEntity());
 $queryBuilder->registerRuntimeField('filter', array(
     'data_type' => 'Citfact\FilterSubscribe\Model\SubscribeTable',
     'reference' => array('=this.FILTER_ID' => 'ref.ID'),
 ))
 ->setSelect(array('*', 'filter'))
+->setOrder(array('ID' => 'DESC'))
 ->setFilter(array('USER_ID' => $userId));
 
 $filterResult = $queryBuilder->exec();
 while ($filter = $filterResult->fetch()) {
-    $filter['DELETE_LINK'] = sprintf('%s?ACTION=DELETE&amp;ID=%d', getenv('SCRIPT_NAME'), $filter['ID']);
     $arResult['ITEMS'][] = $filter;
     if ($filter['SECTION_ID'] > 0) {
         $arResult['SECTION_ID'][] = $filter['SECTION_ID'];
@@ -62,6 +63,28 @@ if (array_key_exists('SECTION_ID', $arResult)) {
     $sectionResult = $queryBuilder->exec();
     while ($section = $sectionResult->fetch()) {
         $arResult['SECTIONS'][$section['ID']] = $section;
+    }
+}
+
+if ($request->isPost() && $arResult['COMPONENT_ID'] == $request->getPost('COMPONENT_ID')) {
+    $subscribeManager = new \Citfact\FilterSubscribe\SubscribeManager();
+    $response = array();
+    if ('DELETE' == $request->getPost('ACTION')) {
+        $filterUserId = (int)$request->getPost('ID');
+        try {
+            $removeResult = $subscribeManager->removeFilterUser($filterUserId);
+            $response['success'] = $removeResult->isSuccess();
+            $response['errors'] = $removeResult->getErrorMessages();
+        } catch (\Exception $e) {
+            $response['success'] = false;
+            $response['errors'] = $e->getMessage();
+        }
+    }
+
+    if (getenv('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest') {
+        $GLOBALS['APPLICATION']->RestartBuffer();
+        header('Content-Type: application/json');
+        exit(json_encode($response));
     }
 }
 
