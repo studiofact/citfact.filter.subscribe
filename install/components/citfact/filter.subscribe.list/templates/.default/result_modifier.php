@@ -33,7 +33,7 @@ foreach ($arResult['ITEMS'] as $key => $item) {
             }
 
             foreach ($valueList as $index => $value) {
-                $valueList[$index] = ($property['PROPERTY_TYPE'] == 'G')
+                $valueList[$index] = ($property['PROPERTY_TYPE'] == 'L')
                     ? $valueStorage[$value]['VALUE']
                     : $valueStorage[$value]['NAME'];
             }

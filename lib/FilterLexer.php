@@ -164,7 +164,7 @@ class FilterLexer
 
         $result = array();
         $queryBuilder = new Entity\Query(Iblock\SectionTable::getEntity());
-        $queryBuilder->setSelect(array('*'))->setFilter(array('ID' => $iblockList));
+        $queryBuilder->setSelect(array('*'))->setFilter(array('ID' => $id));
         $sectionResult = $queryBuilder->exec();
         while ($section = $sectionResult->fetch()) {
             $result[$section['ID']] = $section;
