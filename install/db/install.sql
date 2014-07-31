@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS b_citfact_filter_subscribe_stack (
   ID int(11) unsigned NOT NULL AUTO_INCREMENT,
   FILTER_USER_ID int(11) NOT NULL,
   ACTION varchar(255) NOT NULL,
+  PARAMS text NULL,
   PRIMARY KEY (ID)
 );
 

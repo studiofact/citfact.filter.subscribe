@@ -128,6 +128,13 @@ class SubscribeManager
             'FILTER_ID' => $subscribe['ID']
         ));
 
+        if ($filterUserResult->isSuccess()) {
+            Model\SubscribeStackTable::add(array(
+                'FILTER_USER_ID' => $filterUserResult->getId(),
+                'ACTION' => 'INSERT'
+            ));
+        }
+
         return $filterUserResult;
     }
 

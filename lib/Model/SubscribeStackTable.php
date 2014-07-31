@@ -52,6 +52,11 @@ class SubscribeStackTable extends Entity\DataManager
             'ACTION' => array(
                 'data_type' => 'string',
                 'required' => true,
+                'values' => array('INSERT', 'UPDATE'),
+            ),
+            'PARAMS' => array(
+                'data_type' => 'string',
+                'required' => false,
             ),
         );
     }
