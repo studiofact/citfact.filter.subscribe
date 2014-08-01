@@ -38,6 +38,7 @@ $queryBuilder->registerRuntimeField('filter', array(
 $filterResult = $queryBuilder->exec();
 while ($filter = $filterResult->fetch()) {
     $arResult['ITEMS'][] = $filter;
+    $arResult['IBLOCKS_ID'][] = $filter['IBLOCK_ID'];
     if ($filter['SECTION_ID'] > 0) {
         $arResult['SECTION_ID'][] = $filter['SECTION_ID'];
     }
@@ -63,6 +64,15 @@ if (array_key_exists('SECTION_ID', $arResult)) {
     $sectionResult = $queryBuilder->exec();
     while ($section = $sectionResult->fetch()) {
         $arResult['SECTIONS'][$section['ID']] = $section;
+    }
+}
+
+if (array_key_exists('IBLOCKS_ID', $arResult)) {
+    $queryBuilder = new Entity\Query(IBlock\IblockTable::getEntity());
+    $queryBuilder->setSelect(array('*'))->setFilter(array('ID' => $arResult['IBLOCKS_ID']));
+    $iblockResult = $queryBuilder->exec();
+    while ($iblock = $iblockResult->fetch()) {
+        $arResult['IBLOCKS'][$iblock['ID']] = $iblock;
     }
 }
 
