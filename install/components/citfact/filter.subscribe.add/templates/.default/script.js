@@ -5,7 +5,7 @@ var FilterSubscribe = function(params) {
   this.filterSubscribeForm = params.filterSubscribeForm;
   this.sendType = params.sendType || 'get';
   this.sendUrl = params.sendUrl || window.location.pathname;
-  this.controllFillCount = params.controllFillCount || 3;
+  this.controllFillCount = params.controllFillCount || 4;
   if (!this.targetFilterForm || !this.filterSubscribeForm) {
     throw new Error('Undefine params {targetFilterForm} or {filterSubscribeForm}');
   }

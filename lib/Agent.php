@@ -120,24 +120,16 @@ class Agent
                 $filter['SECTION_ID'] = $task['SECTION_ID'];
             }
 
-            $iteration = $lastElement = 0;
             $filter = array_merge($filter, unserialize($task['FILTER']));
             $elementResult = $iblockElement->GetList(array('ID' => 'ASC'), $filter, false, array('nTopCount' => $limit), array('ID'));
             while ($element = $elementResult->fetch()) {
-                $iteration += 1;
-                $lastElement = $element['ID'];
                 Model\SubscribeNotifyTable::add(array(
                     'FILTER_USER_ID' => $task['FILTER_USER_ID'],
                     'ELEMENT_ID' => $element['ID'],
                 ));
             }
 
-            // If executed for the first time and insert all
-            if ($iteration < $limit && empty($task['PARAMS'])) {
-                Model\SubscribeStackTable::delete(array('ID' => $task['TASK_ID']));
-            } else {
-
-            }
+            Model\SubscribeStackTable::delete(array('ID' => $task['TASK_ID']));
         }
 
         return "Citfact\\FilterSubscribe\\Agent::taskInsertElement($limit)";
